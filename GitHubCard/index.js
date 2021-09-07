@@ -4,6 +4,20 @@
     https://api.github.com/users/<your name>
 */
 
+const entryPoint = document.querySelector('.cards');
+const url =`https://api.github.com/users/andrewmpark`;
+axios.get(url)
+  .then(resp => {
+    console.log(resp.data);
+    const card = gitCardMaker(resp.data);
+    entryPoint.prepend(card);
+  })
+  .catch(err => {
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = 'FAILED TO LOAD DATA';
+    entryPoint.appendChild(errorMessage);
+  });
+
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -17,6 +31,49 @@
     and append the returned markup to the DOM as a child of .cards
 */
 
+function gitCardMaker({ avatar_url, name, login, location, html_url, followers, following, bio }) {
+  const userCard = document.createElement('div');
+  const userImage = document.createElement('img');
+  const userCardInfo = document.createElement('div');
+  const userNameTitle = document.createElement('h3');
+  const userUsername = document.createElement('p');
+  const userLocation = document.createElement('p');
+  const userProfile = document.createElement('p');
+  const userProfileURL = document.createElement('a');
+  const userFollowers = document.createElement('p');
+  const userFollowing = document.createElement('p');
+  const userBio = document.createElement('p');
+
+  userCard.classList.add('card');
+  userImage.setAttribute('src', avatar_url);
+  userProfileURL.href = html_url;
+  userCardInfo.classList.add('cardInfo');
+  userNameTitle.classList.add('name');
+  userNameTitle.textContent = `${name}`;
+  userUsername.classList.add('username')
+  userUsername.textContent = `${login}`;
+  userLocation.textContent = `Location: ${location}`
+  userProfile.textContent = `Profile: ` 
+  userProfileURL.textContent = `${html_url}`;
+  userFollowers.textContent = `Followers: ${followers}`;
+  userFollowing.textContent = `Following: ${following}`;
+  userBio.textContent = `Bio: ${bio}`
+  
+  userCard.appendChild(userImage);
+  userCard.appendChild(userCardInfo);
+  userCardInfo.appendChild(userNameTitle);
+  userCardInfo.appendChild(userUsername);
+  userCardInfo.appendChild(userLocation);
+  userCardInfo.appendChild(userProfile);
+  userCardInfo.appendChild(userFollowers);
+  userCardInfo.appendChild(userFollowing);
+  userCardInfo.appendChild(userBio);
+  userProfile.appendChild(userProfileURL);
+
+return userCard;
+}
+
+
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
     follow this link in your browser https://api.github.com/users/<Your github name>/followers,
@@ -28,7 +85,6 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
